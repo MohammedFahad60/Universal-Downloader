@@ -492,5 +492,3 @@ if __name__ == '__main__':
     print("Features: Stories, Reels, Posts, Videos, Bulk downloads")
     print("Server running on: http://localhost:5000")
     print("=" * 60)
-    gunicorn app:app --bind 0.0.0.0:5000
-
