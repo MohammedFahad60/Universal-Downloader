@@ -15,6 +15,12 @@ import shutil
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here-change-this'
 
+
+@app.route('/')
+def index():
+    """Main page"""
+    return render_template('index.html')
+
 # Create downloads directory if it doesn't exist
 DOWNLOAD_DIR = os.path.join(os.getcwd(), 'downloads')
 if not os.path.exists(DOWNLOAD_DIR):
@@ -313,10 +319,7 @@ class UniversalDownloader:
 # Initialize downloader
 downloader = UniversalDownloader()
 
-@app.route('/')
-def index():
-    """Main page"""
-    return render_template('index.html')
+
 
 @app.route('/download', methods=['POST'])
 def download():
@@ -484,6 +487,7 @@ def clear_downloads():
         return jsonify({'status': 'error', 'message': f'Error clearing downloads: {str(e)}'})
 
 if __name__ == '__main__':
+    app.run()
     print("=" * 60)
     print("UNIVERSAL SOCIAL MEDIA DOWNLOADER")
     print("=" * 60)
