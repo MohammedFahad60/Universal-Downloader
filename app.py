@@ -328,21 +328,32 @@ def index():
     return render_template('index.html')
 
 @app.route('/download', methods=['POST'])
-@app.route('/download', methods=['POST'])
 def download():
-    data = request.get_json()
-    url = data.get('url')
-
-    if not url:
-        return jsonify({'error': 'No URL provided'}), 400
-
     try:
-        result = downloader.download_content(url)
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+        data = request.get_json()
+        video_url = data.get('url')
 
-@app.route('/bulk-download', methods=['POST'])
+        if not video_url:
+            return jsonify({"error": "No URL provided"}), 400
+
+        ydl_opts = {
+            'quiet': True,
+            'format': 'best',
+            'noplaylist': True,
+            'outtmpl': '%(title)s.%(ext)s',
+            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+        }
+
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(video_url, download=False)
+            video_link = info.get("url", None)
+            title = info.get("title", "No Title")
+
+        return jsonify({"title": title, "url": video_link})
+
+    except Exception as e:
+        print(f"❌ Backend Error: {e}")
+        return jsonify({"error": str(e)}), 500
 def bulk_download():
     """Handle bulk download requests"""
     try:
