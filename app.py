@@ -26,15 +26,7 @@ class UniversalDownloader:
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
-        ydl_opts = {
-            'format': 'best',
-            'noplaylist': True,
-            'quiet': True,
-            'outtmpl': '%(title)s.%(ext)s',
-            'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-        }
 
-        
         
     def detect_platform(self, url):
         """Detect the platform from URL"""
@@ -197,7 +189,6 @@ class UniversalDownloader:
         try:
             ydl_opts = {
                 'outtmpl': os.path.join(path, 'Twitter_%(uploader)s_%(title)s.%(ext)s'),
-                'writesubtitles': True,
             }
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -354,6 +345,8 @@ def download():
     except Exception as e:
         print(f"❌ Backend Error: {e}")
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/bulk-download', methods=['POST'])    
 def bulk_download():
     """Handle bulk download requests"""
     try:
@@ -499,4 +492,5 @@ if __name__ == '__main__':
     print("Features: Stories, Reels, Posts, Videos, Bulk downloads")
     print("Server running on: http://localhost:5000")
     print("=" * 60)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    gunicorn app:app --bind 0.0.0.0:5000
+
