@@ -1149,6 +1149,36 @@
         createParticles();
         console.log('🚀 Modern Social Media Downloader loaded!');
     });
+        document.getElementById('downloadForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const url = document.getElementById('videoUrl').value;
+    const resultBox = document.getElementById('result');
+
+    fetch('/download', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data || typeof data !== 'object') {
+            throw new Error("Invalid response from server");
+        }
+
+        if (data.error) {
+            resultBox.innerHTML = `<p class="error">❌ ${data.error}</p>`;
+        } else {
+            resultBox.innerHTML = `
+                <h3>${data.title}</h3>
+                <a href="${data.url}" download>⬇️ Download</a>
+            `;
+        }
+    })
+    .catch(err => {
+        resultBox.innerHTML = `<p class="error">❌ ${err.message}</p>`;
+    });
+});
     </script>
 </body>
 </html>
