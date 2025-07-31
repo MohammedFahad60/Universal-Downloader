@@ -483,7 +483,9 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return '✅ Flask is working! Welcome to Universal Downloader'
+    return render_template('index.html')
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print("UNIVERSAL SOCIAL MEDIA DOWNLOADER")
