@@ -478,14 +478,6 @@ def clear_downloads():
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Error clearing downloads: {str(e)}'})
 
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return render_template('index.html')
-
-
 if __name__ == '__main__':
     print("=" * 60)
     print("UNIVERSAL SOCIAL MEDIA DOWNLOADER")
