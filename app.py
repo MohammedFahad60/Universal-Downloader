@@ -329,33 +329,10 @@ def download():
         return jsonify({'error': 'No URL provided'}), 400
 
     try:
-        with YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(url, download=True)
-            
-            if info is None:
-                return jsonify({'error': 'Failed to retrieve video info'}), 500
-
-            if 'entries' in info:
-                # Playlist: download first video only
-                info = info['entries'][0]
-            
-            video_title = info.get('title', 'downloaded_video')
-            file_path = os.path.join(downloads_folder, f"{video_title}.mp4")
-
-            # Wait until file exists
-            for _ in range(20):  # wait max 10 seconds
-                if os.path.exists(file_path):
-                    break
-                time.sleep(0.5)
-
-            if not os.path.exists(file_path):
-                return jsonify({'error': 'Download failed or file not found'}), 500
-
-            return send_file(file_path, as_attachment=True)
-    
+        result = downloader.download_content(url)
+        return jsonify(result)
     except Exception as e:
-        return jsonify({'error': f'YouTube error: {str(e)}'}), 500
-
+        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
 
 @app.route('/bulk-download', methods=['POST'])
 def bulk_download():
